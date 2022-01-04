@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken'
 export const verifyToken = (req, res, next) => {
 	const authHeader = req.headers.token;
 	if (authHeader) {
-		const token = authHeader.split(" ")[0]; /* Get the token from the header */
+		const token = authHeader.split(" ")[0]; /* Get the token from the headers */
 		jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
 			if (err) res.status(403).json("Invalid token");
 			req.user = user;
@@ -18,21 +18,15 @@ export const verifyToken = (req, res, next) => {
 // Authorize users based on access token
 export const tokenAuthorization = (req, res, next) => {
 	verifyToken(req, res, () => {
-		if (req.user.id === id || req.user.isAdmin) {
-			next();
-		} else {
-			res.status(403).json("Unauthorized action");
-		}
+		req.user.id === id /*What is this id ??*/ || req.user.isAdmin
+			? next()
+			: res.status(403).json("unauthorized action");
 	});
 };
 
 // Authorize admin actions
 export const adminAuthorization = (req, res, next) => {
 	verifyToken(req, res, () => {
-		if (req.user.isAdmin) {
-			next();
-		} else {
-			res.status(403).json("Unauthorized action");
-		}
+		req.user.isAdmin ? next() : res.status(403).json("unauthorized action");
 	});
 };

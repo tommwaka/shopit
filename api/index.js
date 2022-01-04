@@ -16,14 +16,14 @@ dotenv.config();
 const PORT = process.env.PORT;
 const app = express();
 
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.json());
+app.use(cors());
+
 // DB connection
 mongoose.connect(process.env.DB_URI, () =>
 	console.log("DB Connection Established")
 );
-
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.json());
-app.use(cors());
 
 // Routes
 app.use("/api/users", userRoutes);

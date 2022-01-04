@@ -25,8 +25,10 @@ export const loginUser = async (req, res) => {
         const user = await User.findOne({ username: username })
         !user && res.status(401).json('Wrong credentials')
         
-        const hashedPassword = cryptoJs.AES.decrypt(user.password, process.env.HASH_SECRET)
-        const plainPassword = hashedPassword.toString(cryptoJs.enc.utf8)
+        const plainPassword = cryptoJs.AES.decrypt(
+					user.password,
+					process.env.HASH_SECRET
+				).toString(cryptoJs.enc.utf8);
 
         plainPassword !== req.body.password && res.status(401).json('Wrong credentials')
 
